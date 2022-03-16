@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
-
+import {openNotification} from '../../../common/notification';
 import { 
   GET_LIST_CATEGORIES, 
   CREATE_CATEGORY, 
@@ -72,14 +72,14 @@ function* getListCategoriesSaga(data) {
 function* createCategorySaga(data) {
   try {
     const response = yield call(createCategory, data.payload);
-    console.log(response);
     if(response &&  response.data) {
       yield put(createCategorySucces());
+      openNotification('success', 'Thông báo', 'Thêm mới danh mục thành công')
     } else {
       yield put(createCategoryError());
     }
   } catch (error){
-    console.log(error);
+    openNotification('error', 'Thông báo', 'Thêm mới danh mục thất bại');
     yield put(createCategoryError());
   }
 };
@@ -87,14 +87,14 @@ function* createCategorySaga(data) {
 function* updateCategorySaga(data) {
   try {
     const response = yield call(updateCategory, data.payload);
-    console.log(response);
     if(response &&  response.data) {
+      openNotification('success', 'Thông báo', 'Chỉnh sửa danh mục thành công')
       yield put(updateCategorySucces());
     } else {
       yield put(updateCategoryError());
     }
   } catch (error){
-    console.log(error);
+    openNotification('error', 'Thông báo', 'Chỉnh sửa danh mục thất bại');
     yield put(updateCategoryError());
   }
 };

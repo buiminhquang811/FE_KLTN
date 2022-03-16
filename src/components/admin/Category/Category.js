@@ -4,51 +4,59 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getListCategoriesRequest, createCategoryRequest, updateCategoryRequest } from '../redux/action';
 import { Col, Row } from 'antd';
 import { Input, Table, Button, Tooltip, Modal, Form, Select, Spin } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 import moment from 'moment';
 
 const { Search } = Input;
 
+const { confirm } = Modal;
 
 export default function Category() {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
   const columns = [
     {
       title: 'Tên danh mục',
       dataIndex: 'name',
       key: 'name',
+      width: 160,
     },
     {
       title: 'Danh mục cha',
       dataIndex: 'parentName',
       key: 'parentName',
+      width: 160,
     },
     {
       title: 'Chú thích',
       dataIndex: 'note',
       key: 'note',
+      width: 220,
     },
     {
       title: 'Người tạo',
       dataIndex: 'createdBy',
       key: 'createdBy',
+      width: 160,
     },
     {
       title: 'Thời gian tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 160,
     },
     {
       title: 'Người cập nhật',
       dataIndex: 'updatedBy',
       key: 'updatedBy',
+      width: 160,
     },
     {
       title: 'Thời gian cập nhật',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      width: 160,
     },
     {
       title: 'Thao tác',
@@ -60,12 +68,13 @@ export default function Category() {
               <Button icon={<EditOutlined />}  type="default" style={{marginRight: '10px'}} onClick={() => onOpenModalEdit(text, record)}/>         
             </Tooltip>
             <Tooltip title="Xóa">
-              <Button icon={<DeleteOutlined />} type="default" />   
+              <Button icon={<DeleteOutlined />} type="default" onClick={() => showConfirm(record)}/>   
             </Tooltip>
           </>
          
         )
-      }
+      },
+      width: 100,
     }
   ]
 
@@ -190,10 +199,29 @@ export default function Category() {
           size: params.size,
           term: params.term
         }
+        // openNotification('Thông báo', 'Thêm mới danh mục thành công');
         dispatch(getListCategoriesRequest(obj));
     }
     
   }, [isSuccessCreateCategory]);
+
+  function showConfirm(record) {
+    console.log({record});
+    confirm({
+      title: `Bạn có chắc chắn muốn xóa danh mục ${record.name} không?`,
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Đồng ý',
+      okType: 'danger',
+      cancelText: 'Hủy bỏ',
+      // content: 'Some descriptions',
+      onOk() {
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
 
   useEffect(() => {
     if(isSuccessUpdateCategory && formRef.current) {
@@ -203,8 +231,9 @@ export default function Category() {
           page: params.page - 1,
           size: params.size,
           term: params.term
-        }
-        dispatch(getListCategoriesRequest(obj));
+        };
+        // openNotification('Thành công', 'Chỉnh sửa danh mục thành công');
+        dispatch(getListCategoriesRequest(obj));   
     }
     
   }, [isSuccessUpdateCategory]);
@@ -251,6 +280,7 @@ export default function Category() {
             showTotal: (total, range) => `Hiển thị ${range[0]} - ${range[1]} của ${total} bản ghi`,
             showSizeChanger: true
           }}
+          scroll={{ x: 'max-content' }}
           />
         </Col>
       </Row>
