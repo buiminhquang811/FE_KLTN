@@ -1,0 +1,86 @@
+.ant-layout .trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.ant-layout .trigger:hover {
+  color: #1890ff;
+}
+
+.ant-layout .logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.site-layout .site-layout-background-header {
+  background: #fff;
+}
+
+.layout-header-admin {
+  display: flex;
+  justify-content: space-between;
+}
+
+.layout-header-user-info {
+  padding-right: 24px;
+  display: flex;
+}
+
+.log-in {
+  cursor: pointer;
+  &:hover{
+    color: #1890ff;
+  }
+}
+
+.cart-badge {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.layout-header-user-info1 {
+  display: flex;
+  align-items: center;
+}
+
+.item-cart{
+  width: 400px;
+}
+
+.cart-item-detail {
+  image{
+    width: 100%; /* or any custom size */
+    height: 100%; 
+    object-fit: contain;
+  }
+}
+
+.information {
+  position: relative;
+  .close-button {
+    position: absolute;
+    top: 40%;
+    right: 10%;
+    .close-icon{
+      cursor: pointer;
+      &:hover {
+        color: red;
+      }
+    }
+  }
+}
+
+.button-cart {
+  .ant-dropdown-menu-title-content {
+    display: flex;
+    justify-content: center;
+  }
+}

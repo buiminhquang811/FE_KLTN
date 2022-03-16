@@ -1,0 +1,27 @@
+.product {
+  padding: 15px;
+  border: 1px solid #ccc;
+  margin-bottom: 16px;
+  .product-image {
+    cursor: pointer;
+    img {
+      width: 100%; /* or any custom size */
+      height: 100%; 
+      object-fit: contain;
+    }
+  }
+  .product-info {
+    padding-top: 0.7em;
+    padding-bottom: 1.4em;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.product-info-name {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,15 @@
+.form-login-container {
+  background-color: #2c3338;
+  height: 100vh;
+  .form-login {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  .form-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
