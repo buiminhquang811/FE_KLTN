@@ -5,8 +5,10 @@ import { getListCategoriesRequest, createCategoryRequest, updateCategoryRequest 
 import { Col, Row } from 'antd';
 import { Input, Table, Button, Tooltip, Modal, Form, Select, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import apiBase from "../../../common/baseAPI";
 
 import moment from 'moment';
+import { openNotification } from '../../../common/notification';
 
 const { Search } = Input;
 
@@ -21,6 +23,7 @@ export default function Category() {
       dataIndex: 'name',
       key: 'name',
       width: 160,
+      fixed: 'left',
     },
     {
       title: 'Danh mục cha',
@@ -61,14 +64,15 @@ export default function Category() {
     {
       title: 'Thao tác',
       key: 'action',
+      fixed: 'right',
       render: (text, record) => {
         return (
           <>
             <Tooltip title="Sửa">
-              <Button icon={<EditOutlined />}  type="default" style={{marginRight: '10px'}} onClick={() => onOpenModalEdit(text, record)}/>         
+              <Button icon={<EditOutlined />}  type="primary" style={{marginRight: '10px'}} onClick={() => onOpenModalEdit(text, record)}/>         
             </Tooltip>
             <Tooltip title="Xóa">
-              <Button icon={<DeleteOutlined />} type="default" onClick={() => showConfirm(record)}/>   
+              <Button icon={<DeleteOutlined />} type="default" danger onClick={() => showConfirm(record)}/>   
             </Tooltip>
           </>
          
@@ -206,19 +210,30 @@ export default function Category() {
   }, [isSuccessCreateCategory]);
 
   function showConfirm(record) {
-    console.log({record});
     confirm({
       title: `Bạn có chắc chắn muốn xóa danh mục ${record.name} không?`,
       icon: <ExclamationCircleOutlined />,
       okText: 'Đồng ý',
       okType: 'danger',
       cancelText: 'Hủy bỏ',
-      // content: 'Some descriptions',
       onOk() {
-        console.log('OK');
+        apiBase
+        .delete(`categories/${record.id}`)
+        .then((res) => {
+          if(res) {
+            openNotification('success', 'Thông báo', 'Xóa danh mục thành công');
+            const obj = {
+              page: params.page - 1,
+              size: params.size,
+              term: params.term
+            }
+            dispatch(getListCategoriesRequest(obj));
+          }
+        })
+        .catch(error => openNotification('error', 'Thông báo', 'Xóa danh mục thất bại'))
       },
       onCancel() {
-        console.log('Cancel');
+        
       },
     });
   }
