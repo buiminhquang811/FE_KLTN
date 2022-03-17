@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './Category.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { getListCategoriesRequest, createCategoryRequest, updateCategoryRequest } from '../redux/action';
-import { Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import { Input, Table, Button, Tooltip, Modal, Form, Select, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import apiBase from "../../../common/baseAPI";
@@ -272,12 +272,13 @@ export default function Category() {
 
   return (
     <>
+      <Card>
       <Row>
         <Col span={16}>
           <Button icon={<PlusOutlined />} onClick={() => openAddNewCate()}>Thêm mới</Button>
         </Col>   
         <Col span={8}>
-          <Search placeholder="Nhập để tìm kiếm" allowClear onSearch={onSearch} />
+          <Search placeholder="Tìm kiếm tên danh mục" allowClear onSearch={onSearch} />
         </Col>        
       </Row>
       <br />
@@ -363,6 +364,8 @@ export default function Category() {
         </Form>
         </Spin>
       </Modal>
+      </Card>
+      
       
     </>
   )

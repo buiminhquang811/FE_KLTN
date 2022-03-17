@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Input, Button, Upload, Form, Select, Spin, TreeSelect } from 'antd';
+import { Input, Button, Upload, Form, Select, Spin, TreeSelect, Card } from 'antd';
 import { getListCategoriesRequest, getListProducerRequest, getDetailProductRequest, clearDetailProduct } from '../redux/action';
 import {useParams} from 'react-router-dom';
 import './NewProduct.scss'
@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Col, Row } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import {createProductRequest } from '../redux/action';
-
+import apiBase from "../../../common/baseAPI";
+import { openNotification } from '../../../common/notification';
 
 
 export default function NewProduct() {
@@ -68,10 +69,12 @@ export default function NewProduct() {
       if (itemProductReducer.product.productImg3) {
         productsImg[3] = {};
         productsImg[3].url = itemProductReducer.product.productImg3
+        productsImg[3].name = getNameImg(itemProductReducer.product.productImg3);
       }
       if (itemProductReducer.product.productImg4) {
         productsImg[4] = {};
-        productsImg[4].url = itemProductReducer.product.productImg4
+        productsImg[4].url = itemProductReducer.product.productImg4;
+        productsImg[4].name = getNameImg(itemProductReducer.product.productImg4);
       };
       initValue.productsImg = productsImg;
       form.setFieldsValue(initValue);
@@ -140,16 +143,39 @@ export default function NewProduct() {
 
   const onFinish = (values) => {
     // values.categoryId = 3;
-    const formData = new FormData();
-    for (const name in values) {
-      if (name !== 'productsImg') {
-        formData.append(name, values[name] || "");
+    if (!id) {
+      const formData = new FormData();
+      for (const name in values) {
+        if (name !== 'productsImg') {
+          formData.append(name, values[name] || "");
+        }
       }
+      for (let i = 0; i < values.productsImg.length; i++) {
+        formData.append(`productsImg`, values.productsImg[i].originFileObj);
+      };
+      dispatch(createProductRequest(formData));
+    } else {
+      const formData = new FormData();
+      for (const name in values) {
+        if (name !== 'productsImg') {
+          formData.append(name, values[name] || "");
+        }
+      }
+      for (let i = 0; i < values.productsImg.length; i++) {
+        if(values.productsImg[i].originFileObj) {
+          formData.append(`productsImg`, values.productsImg[i].originFileObj);
+        }
+      };
+      apiBase
+      .put(`products/edit/${id}`, formData)
+        .then((res) => {
+          if(res) {
+            openNotification('success', 'Thông báo', 'Cập nhật thành công');
+            dispatch(getDetailProductRequest(id));
+          }
+        })
+        .catch(error => {console.log(error); openNotification('error', 'Thông báo', 'Cập nhật thất bại')})
     }
-    for (let i = 0; i < values.productsImg.length; i++) {
-      formData.append(`productsImg`, values.productsImg[i].originFileObj);
-    };
-    dispatch(createProductRequest(formData));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -166,6 +192,7 @@ export default function NewProduct() {
 
   return (
     <>
+    <Card>
       <Row>
         <Col span={24}>
           <Form
@@ -261,6 +288,10 @@ export default function NewProduct() {
                   maxCount={5}
                   beforeUpload={() => false}
                   multiple
+                  showUploadList={{
+                    showRemoveIcon: id ? false : true,
+                    }
+                  }
                 >
                   <Button icon={<UploadOutlined />}>Upload (Max: 5)</Button>
                 </Upload>
@@ -273,6 +304,8 @@ export default function NewProduct() {
           </Form>
         </Col>
       </Row>
+    </Card>
+      
     </>
   )
 }

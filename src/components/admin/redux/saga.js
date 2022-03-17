@@ -104,6 +104,7 @@ function* getListProducerSaga(data) {
     const response = yield call(getListProducer, data);
     if(response &&  response.data) {
       yield put(getListProducerSucces(response.data));
+      
     } else {
       yield put(getListProducerError());
     }
@@ -115,14 +116,15 @@ function* getListProducerSaga(data) {
 function* createProducerSaga(data) {
   try {
     const response = yield call(createProducer, data.payload);
-    console.log(response);
     if(response &&  response.data) {
       yield put(createProducerSucces());
+      openNotification('success', 'Thông báo', 'Thêm mới NSX thành công')
     } else {
       yield put(createProducerError());
+      openNotification('error', 'Thông báo', 'Thêm mới NSX thất bại');
     }
   } catch (error){
-    console.log(error);
+    openNotification('error', 'Thông báo', 'Thêm mới NSX thất bại');
     yield put(createProducerError());
   }
 };
@@ -130,14 +132,15 @@ function* createProducerSaga(data) {
 function* updateProducerSaga(data) {
   try {
     const response = yield call(updateProducer, data.payload);
-    console.log(response);
     if(response &&  response.data) {
       yield put(updateProducerSucces());
+      openNotification('success', 'Thông báo', 'Chỉnh sửa NSX thành công')
     } else {
       yield put(updateProducerError());
+      openNotification('error', 'Thông báo', 'Chỉnh sửa NSX thất bại')
     }
   } catch (error){
-    console.log(error);
+    openNotification('error', 'Thông báo', 'Chỉnh sửa NSX thất bại')
     yield put(updateProducerError());
   }
 };
@@ -145,14 +148,15 @@ function* updateProducerSaga(data) {
 function* createProductSaga(data) {
   try {
     const response = yield call(createProduct, data.payload);
-    console.log(response);
     if(response &&  response.data) {
+      openNotification('success', 'Thông báo', 'Thêm mới sản phẩm thành công')
       yield put(createProductSucces());
     } else {
+      openNotification('error', 'Thông báo', 'Thêm mới sản phẩm thất bại')
       yield put(createProductError());
     }
   } catch (error){
-    console.log(error);
+    openNotification('error', 'Thông báo', 'Thêm mới sản phẩm thất bại')
     yield put(createProductError());
   }
 };

@@ -55,7 +55,7 @@ const createProducer = (data) => {
 const updateProducer = (data) => {
   return new Promise((resolve, reject) => {
     return apiBase
-    .put(`${PRODUCT}/create`, data)
+    .put(`${PRODUCER}/edit/${data.id}`, data)
     .then((res) => resolve(res))
     .catch((err) => reject(err));
   })

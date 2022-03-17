@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './Order.scss'
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import { Input, Table, Button, Tooltip, Modal, Form, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -224,8 +224,8 @@ export default function Order() {
   
 
   return (
-    <>  
-       <Row>
+    <Card>  
+      <Row>
         <Col span={8}>
           <Search placeholder="Nhập để tìm kiếm" allowClear onSearch={onSearch} />
         </Col>        
@@ -314,6 +314,6 @@ export default function Order() {
         </>
         
       </Modal>
-    </>
+    </Card>
   )
 }

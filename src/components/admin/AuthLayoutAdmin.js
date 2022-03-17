@@ -7,11 +7,15 @@ import {
   MenuFoldOutlined,
   UserOutlined,
   UnorderedListOutlined,
-  DownOutlined
+  DownOutlined,
+  InboxOutlined,
+  SolutionOutlined,
+  StarOutlined
 } from '@ant-design/icons';
 import './AuthLayoutAdmin.scss';
 import { getLoggedInUser } from "../../helpers/authUtils";
 import Avatar from "antd/lib/avatar/avatar";
+import Logo from "../logo.jpg";
 
 const loading = () => <div className="text-center"></div>;
 const { Header, Sider, Content } = Layout;
@@ -54,19 +58,23 @@ class AuthLayoutAdmin extends Component {
     return (
       <Layout>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed} style={{height: 'auto', minHeight: '100vh'}}>
-          <div className="logo" />
+          <div className="logo" > 
+            <img src={Logo} className="img-logo"/>
+            {!this.state.collapsed && <span className="shop-name">Quang Shop</span>}
+          </div>
           <Menu theme="dark" mode="inline" selectedKeys={this.state.selectedKeys} onSelect={(data) => this.onSelect(data)}>
             
-              <Menu.Item key="Category" icon={<UnorderedListOutlined />}>
+              <Menu.Item key="Category" icon={<InboxOutlined />}>
                 <Link to="/admin/category">Category</Link>
+              </Menu.Item>
+              <Menu.Item key="Producer" icon={<SolutionOutlined />}>
+                <Link to="/admin/producer">Producer</Link>
               </Menu.Item>
               <Menu.Item key="Product" icon={<UnorderedListOutlined />}>
                 <Link to="/admin/product">Product</Link>
               </Menu.Item>
-              <Menu.Item key="Producer" icon={<UnorderedListOutlined />}>
-                <Link to="/admin/producer">Producer</Link>
-              </Menu.Item>
-              <Menu.Item key="Order" icon={<UnorderedListOutlined />}>
+              
+              <Menu.Item key="Order" icon={<StarOutlined />}>
                 <Link to="/admin/order">Order</Link>
               </Menu.Item>
             
@@ -110,7 +118,7 @@ class AuthLayoutAdmin extends Component {
             className="site-layout-background"
             style={{
               margin: '24px 16px',
-              padding: 24,
+              padding: 0,
               minHeight: 280,
             }}
           >

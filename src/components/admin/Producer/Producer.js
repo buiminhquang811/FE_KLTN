@@ -3,12 +3,16 @@ import './Producer.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { getListProducerRequest, createProducerRequest, updateProducerRequest } from '../redux/action';
 import { Col, Row } from 'antd';
-import { Input, Table, Button, Tooltip, Modal, Form, Spin } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-
+import { Input, Table, Button, Tooltip, Modal, Form, Spin, Card } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import apiBase from "../../../common/baseAPI";
+import { openNotification } from '../../../common/notification';
 import moment from 'moment';
 
+
 const { Search } = Input;
+
+const { confirm } = Modal;
 
 export default function Producer() {
 
@@ -19,53 +23,64 @@ export default function Producer() {
       title: 'Tên NSX',
       dataIndex: 'name',
       key: 'name',
+      width: 160,
+      fixed: 'left',
     },
     {
       title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
+      width: 200,
     },
     {
       title: 'Chú thích',
       dataIndex: 'note',
       key: 'note',
+      width: 160,
     },
     {
       title: 'Đường dẫn',
       dataIndex: 'link',
       key: 'link',
+      width: 160,
     },
     {
       title: 'Người tạo',
       dataIndex: 'createdBy',
       key: 'createdBy',
+      width: 160,
     },
     {
       title: 'Thời gian tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 160,
     },
     {
       title: 'Người cập nhật',
       dataIndex: 'updatedBy',
       key: 'updatedBy',
+      width: 160,
     },
     {
       title: 'Thời gian cập nhật',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      width: 160,
     },
     {
       title: 'Thao tác',
       key: 'action',
+      fixed: 'right',
+      width: 100,
       render: (text, record) => {
         return (
           <>
             <Tooltip title="Sửa">
-              <Button icon={<EditOutlined />}  type="default" style={{marginRight: '10px'}} onClick={() => onOpenModalEdit(text, record)}/>         
+              <Button icon={<EditOutlined />}  type="primary" style={{marginRight: '10px'}} onClick={() => onOpenModalEdit(text, record)}/>         
             </Tooltip>
             <Tooltip title="Xóa">
-              <Button icon={<DeleteOutlined />} type="default" />   
+              <Button icon={<DeleteOutlined />} type="default" danger onClick={() => showConfirm(record)} />   
             </Tooltip>
           </>
          
@@ -101,6 +116,35 @@ export default function Producer() {
     }
     dispatch(getListProducerRequest(obj));
   }, []);
+
+  function showConfirm(record) {
+    confirm({
+      title: `Bạn có chắc chắn muốn xóa NSX ${record.name} không?`,
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Đồng ý',
+      okType: 'danger',
+      cancelText: 'Hủy bỏ',
+      onOk() {
+        apiBase
+        .delete(`producers/${record.id}`)
+        .then((res) => {
+          if(res) {
+            openNotification('success', 'Thông báo', 'Xóa NSX thành công');
+            const obj = {
+              page: params.page - 1,
+              size: params.size,
+              term: params.term
+            }
+            dispatch(getListProducerRequest(obj));
+          }
+        })
+        .catch(error => openNotification('error', 'Thông báo', 'Xóa NSX thất bại'))
+      },
+      onCancel() {
+        
+      },
+    });
+  }
 
   useEffect(() => {
     if(listProducerReducer.listProducer) {
@@ -211,12 +255,13 @@ export default function Producer() {
 
   return (
     <>  
-       <Row>
+      <Card>
+      <Row>
         <Col span={16}>
           <Button icon={<PlusOutlined />} onClick={() => openAddNewCate()}>Thêm mới</Button>
         </Col>   
         <Col span={8}>
-          <Search placeholder="Nhập để tìm kiếm" allowClear onSearch={onSearch} />
+          <Search placeholder="Tìm kiếm tên NSX" allowClear onSearch={onSearch} />
         </Col>        
       </Row>
       <br />
@@ -234,6 +279,7 @@ export default function Producer() {
             showTotal: (total, range) => `Hiển thị ${range[0]} - ${range[1]} của ${total} bản ghi`,
             showSizeChanger: true
           }}
+          scroll={{ x: 'max-content' }}
           />
         </Col>
       </Row>
@@ -307,6 +353,8 @@ export default function Producer() {
         </Form>
         </Spin>
       </Modal>
+      </Card>
+      
     </>
   );
 }
