@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import './Order.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Col, Row } from 'antd';
-import { Input, Table, Button, Tooltip, Modal, Form, Spin } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Input, Table, Button, Tooltip, Modal, Form, Spin, Select } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { getListOrderRequest, getDetailOrderRequest } from '../redux/action';
 import apiBase from "../../../common/baseAPI";
 
 const { Search } = Input;
+const { Option } = Select;
 
 export default function Order() {
   const [form] = Form.useForm()
@@ -33,6 +34,7 @@ export default function Order() {
       title: 'Tên khách hàng',
       dataIndex: 'name',
       key: 'name',
+      width: 160,
       render: (text, record) => {
         return(
          <a onClick={() => onOpenModal(record)}>{record.name}</a>
@@ -43,20 +45,24 @@ export default function Order() {
       title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
+      width: 250,
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      width: 180,
     },
     {
       title: 'SĐT',
       dataIndex: 'mobile',
       key: 'mobile',
+      width: 160,
     },
     {
       title: 'Trạng thái',
       key: 'status',
+      width: 160,
       render: (text, record) => {
         return(
          <span>{getStatus(text, record)}</span>
@@ -67,16 +73,19 @@ export default function Order() {
       title: 'Chú thích',
       dataIndex: 'note',
       key: 'note',
+      width: 250,
     },
     {
       title: 'Thời gian tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 160,
     },
     {
       title: 'Thời gian cập nhật',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      width: 160,
     },
     // {
     //   title: 'Thao tác',
@@ -112,15 +121,24 @@ export default function Order() {
       title: 'Số lượng',
       dataIndex: 'quantity',
       key: 'quantity',
+      align: 'center',
     },
     {
       title: 'Đơn giá',
       dataIndex: 'price',
       key: 'price',
+      align: 'right',
+      render: (text, record) => {
+        return(
+         <span>{(record.price*1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
+        )
+      }
     },
     {
       title: 'Thành tiền',
+      dataIndex: 'totalMoney',
       key: 'status',
+      align: 'right',
       render: (text, record) => {
         return(
          <span>{(record.quantity*record.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
@@ -142,14 +160,15 @@ export default function Order() {
   const [params, setParams] = useState({
     page: 1,
     size: 10,
-    term: "",
-  })
+    name: '',
+    email: '',
+    phone: '',
+  });
 
   useEffect(() => {
     const obj = {
       page: params.page - 1,
       size: params.size,
-      term: params.term
     }
     dispatch(getListOrderRequest(obj));
   }, []);
@@ -173,17 +192,16 @@ export default function Order() {
     }
   }, [itemOrderReducer])
 
-  const onSearch = (value) => {
-    const newParams = {
-      ...params,
-      term: value,
-    };
+  const onSearch = () => {
     const obj = {
-      page: newParams.page - 1,
-      size: newParams.size,
-      term: newParams.term
+      ...params,
+      page: params.page - 1,
     }
-    setParams(newParams);
+    Object.keys(obj).forEach(key => {
+      if(!(obj[key] === 0 || obj[key])) {
+        delete obj[key];
+      }
+    })
     dispatch(getListOrderRequest(obj));
   };
 
@@ -199,36 +217,105 @@ export default function Order() {
   };
 
   const updateOrder = () => {
-    return new Promise((resolve, reject) => {
-      return apiBase
-      .put(`orders/update/${detail.id}`)
-      .then((res) => {
-        if({res}) {
-          setOpenModal(false);
-          setDetail(null);
-          const newParams = {
-            ...params,
-          };
-          const obj = {
-            page: newParams.page - 1,
-            size: newParams.size,
-            term: newParams.term
-          }
-          setParams(newParams);
-          dispatch(getListOrderRequest(obj));
-        }
-      })
-      .catch((err) => reject(err));
+    apiBase
+    .put(`orders/update/${detail.id}`)
+    .then((res) => {
+      if({res}) {
+        setOpenModal(false);
+        setDetail(null);
+        const newParams = {
+          ...params,
+          page: params.page - 1,
+        };
+        dispatch(getListOrderRequest(newParams));
+      }
     })
-  }
-  
+    .catch((err) => console.log(err));
+  };
 
+  const onChangeOptionSearch = (e, nameChange) => {
+    const value = (nameChange === 'status') ? e : e.target.value;
+    const name = nameChange;
+    const newObj = {
+      ...params,
+      [name]: value,
+    };
+    setParams(newObj);
+  };
+
+  const onResetField = () => {
+    const obj = {
+      page: 1,
+      size: 10,
+      name: '',
+      code: '',
+    }
+   setParams(obj);
+   const objSearch = {
+    ...obj,
+    page: obj.page - 1,
+  }
+    dispatch(getListOrderRequest(objSearch));
+  };
+  
   return (
-    <Card>  
-      <Row>
-        <Col span={8}>
-          <Search placeholder="Nhập để tìm kiếm" allowClear onSearch={onSearch} />
-        </Col>        
+    <>
+      <Card>
+        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+          <Col span={24} style={{marginBottom: '10px'}}>
+            <span style={{fontSize: '16px', fontWeight: 'bold'}}>Tìm kiếm</span>
+          </Col>
+          <Col span={6}>
+            <label style={{marginBottom: '10px'}}>
+              Tên khách hàng
+            </label>
+            <Input placeholder="Nhập tên khách hàng" value={params.name} name="name" onChange={(e) => onChangeOptionSearch(e, 'name')}/>
+          </Col>
+          <Col span={6}>
+            <label style={{marginBottom: '10px'}}>
+              Email khách hàng
+            </label>
+            <Input placeholder="Nhập email khách hàng" value={params.email} name="code" onChange={(e) => onChangeOptionSearch(e, 'code')}/>
+          </Col>
+          <Col span={6}>
+            <label style={{marginBottom: '10px'}}>
+              Số điện thoai
+            </label>
+            <Input placeholder="Nhập SĐT khách hàng" value={params.phone} name="phone" onChange={(e) => onChangeOptionSearch(e, 'phone')}/>
+          </Col>
+          <Col span={6}>
+            <label style={{marginBottom: '10px'}}>
+              Trạng thái đơn hàng
+            </label>
+            <Select
+              mode="single"
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="Trạng thái đơn hàng"
+              value={params.status} name="status" onChange={(e) => onChangeOptionSearch(e, 'status')}
+            >
+              {listStatus.map(item => 
+                <Option value={item.value} key={item.value+item.label}>
+                  {item.label}
+                </Option>
+              )}
+            </Select>
+          </Col>
+          <Col span={24} style={{marginTop: '10px'}}>
+            <Button icon={<SearchOutlined />} onClick = {onSearch} style={{marginRight: '5px'}} type="primary">Tìm kiếm</Button>
+            <Button onClick = {onResetField}>Nhập lại</Button>
+          </Col>
+        </Row>
+      </Card>
+      <br />
+      <Card>  
+      <Row style={{marginBottom: '0.5rem'}}>
+        <Col span={16}>
+          {/* <Button icon={<PlusOutlined />} onClick = {onAddNew}>Thêm mới</Button> */}
+          <span style={{fontSize: '18px', fontWeight: 'bold'}}> 
+            Có tổng {listOrderReducer ? listOrderReducer.totalRow : 0} đơn hàng
+          </span>
+        </Col>      
       </Row>
       <br />
       <Row>
@@ -238,11 +325,12 @@ export default function Order() {
           dataSource={listOrder} 
           columns={columns} 
           rowKey={record => record.id}
+          scroll={{ x: 'max-content' }}
           loading={isLoading}
           size={'small'}
           pagination={{
             total: listOrderReducer.totalRow, 
-            showTotal: (total, range) => `Hiển thị ${range[0]} - ${range[1]} của ${total} bản ghi`,
+            showTotal: (total, range) => `Hiển thị ${range[0]} - ${range[1]} của ${total} đơn hàng`,
             showSizeChanger: true
           }}
           />
@@ -315,5 +403,7 @@ export default function Order() {
         
       </Modal>
     </Card>
+    </>
+
   )
 }
