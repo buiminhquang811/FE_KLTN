@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListProductRequest, addToCart } from '../redux/action';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Card } from 'antd';
 import "./Home.scss";
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
@@ -43,30 +43,37 @@ export default function Home() {
   return (
    
     <>
-      <Row>
-        <Col span={24}>Danh sách sản phẩm</Col>
-      </Row>
-      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-        {listProduct.map(e => 
-          <Col className="gutter-row" span={6} key={e.id+'SP'}>
-            <div className='product'>
-              <div className='product-image' onClick={() => onRedirect(e)}>
-                <img src={e.thumbnailImg}>
-                </img>
+      <Card>
+
+      </Card>
+      <br />
+      <Card>
+        <Row>
+          <Col span={24}>Danh sách sản phẩm</Col>
+        </Row>
+        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+          {listProduct.map(e => 
+            <Col className="gutter-row" span={6} key={e.id+'SP'}>
+              <div className='product'>
+                <div className='product-image' onClick={() => onRedirect(e)}>
+                  <img src={e.thumbnailImg}>
+                  </img>
+                </div>
+                <div className='product-info'>
+                  <span className='product-info-name' onClick={() => onRedirect(e)}>{e.name}</span>
+                  <span>{parseInt(e.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
+                </div>
+                <div className='product-button'>
+                <Button type="default" icon={<ShoppingCartOutlined />} onClick={() => onAddToCart(e)}>
+                  Thêm vào giỏ
+                </Button>
+                </div>
               </div>
-              <div className='product-info'>
-                <span className='product-info-name' onClick={() => onRedirect(e)}>{e.name}</span>
-                <span>{parseInt(e.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
-              </div>
-              <div className='product-button'>
-              <Button type="default" icon={<ShoppingCartOutlined />} onClick={() => onAddToCart(e)}>
-                Thêm vào giỏ
-              </Button>
-              </div>
-            </div>
-          </Col>
-        )}
-      </Row>
+            </Col>
+          )}
+        </Row>
+      </Card>
+      
     </>
   )
 }

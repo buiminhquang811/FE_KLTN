@@ -10,7 +10,8 @@ import {
   DownOutlined,
   InboxOutlined,
   SolutionOutlined,
-  StarOutlined
+  StarOutlined,
+  CommentOutlined
 } from '@ant-design/icons';
 import './AuthLayoutAdmin.scss';
 import { getLoggedInUser } from "../../helpers/authUtils";
@@ -65,17 +66,21 @@ class AuthLayoutAdmin extends Component {
           <Menu theme="dark" mode="inline" selectedKeys={this.state.selectedKeys} onSelect={(data) => this.onSelect(data)}>
             
               <Menu.Item key="Category" icon={<InboxOutlined />}>
-                <Link to="/admin/category">Category</Link>
+                <Link to="/admin/category">Danh mục</Link>
               </Menu.Item>
               <Menu.Item key="Producer" icon={<SolutionOutlined />}>
-                <Link to="/admin/producer">Producer</Link>
+                <Link to="/admin/producer">Nhà sản xuất</Link>
               </Menu.Item>
               <Menu.Item key="Product" icon={<UnorderedListOutlined />}>
-                <Link to="/admin/product">Product</Link>
+                <Link to="/admin/product">Sản phẩm</Link>
               </Menu.Item>
               
               <Menu.Item key="Order" icon={<StarOutlined />}>
-                <Link to="/admin/order">Order</Link>
+                <Link to="/admin/order">Đơn hàng</Link>
+              </Menu.Item>
+
+              <Menu.Item key="Comment" icon={<CommentOutlined />}>
+                <Link to="/admin/comment">Bình luận</Link>
               </Menu.Item>
             
           

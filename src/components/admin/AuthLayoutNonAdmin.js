@@ -190,7 +190,7 @@ class AuthLayoutNonAdmin extends Component {
 
     return (
       <Layout>
-        <Sider trigger={null} collapsible collapsed={this.state.collapsed} style={{height: 'auto', minHeight: '100vh'}}>
+        {/* <Sider trigger={null} collapsible collapsed={this.state.collapsed} style={{height: 'auto', minHeight: '100vh'}}>
           <div className="logo" />
           <Menu theme="dark" mode="inline" selectedKeys={this.state.selectedKeys} onSelect={(data) => this.onSelect(data)}>
             {menuItem.map(e =>  
@@ -202,14 +202,14 @@ class AuthLayoutNonAdmin extends Component {
                 </SubMenu>
             )}
           </Menu>
-        </Sider>
-        <Layout className="site-layout">
+        </Sider> */}
+        <Layout className="site-layout1">
           <Header className="site-layout-background-header" style={{ padding: 0 }}>
             <div className="layout-header-admin">
               <span>
-                {this.state.collapsed ?  
+                {/* {this.state.collapsed ?  
                 <MenuUnfoldOutlined className="trigger" onClick={this.toggle}/> : 
-                <MenuFoldOutlined className="trigger" onClick={this.toggle}/>}
+                <MenuFoldOutlined className="trigger" onClick={this.toggle}/>} */}
               </span>
 
               <div className="layout-header-user-info">

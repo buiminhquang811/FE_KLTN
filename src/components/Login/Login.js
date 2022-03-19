@@ -3,7 +3,7 @@ import { Row, Col, Form, Input, Button, Spin } from 'antd';
 import "./Login.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import {login} from './redux/action';
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import {isAdminAuthenticated} from "../../helpers/authUtils";
 import { useHistory } from 'react-router-dom';
 
@@ -68,6 +68,7 @@ export default function Login() {
         >
           <Input.Password />
         </Form.Item>
+        <Link to="/register">Đăng ký tài khoản</Link>
 
         <Form.Item wrapperCol={{  offset: 8, span: 6  }} style={{textAlign: "center"}}>
           <Button type="primary" htmlType="submit">

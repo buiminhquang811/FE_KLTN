@@ -7,6 +7,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant
 import moment from 'moment';
 import { getListOrderRequest, getDetailOrderRequest } from '../redux/action';
 import apiBase from "../../../common/baseAPI";
+import { openNotification } from '../../../common/notification';
+
 
 const { Search } = Input;
 const { Option } = Select;
@@ -216,6 +218,24 @@ export default function Order() {
     setDetail(record);
   };
 
+  const rejectOrder = () => {
+    apiBase
+    .put(`orders/reject/${detail.id}`)
+    .then((res) => {
+      if({res}) {
+        setOpenModal(false);
+        setDetail(null);
+        const newParams = {
+          ...params,
+          page: params.page - 1,
+        };
+        openNotification('success', 'Thông báo', 'Hủy đơn hàng thành công');
+        dispatch(getListOrderRequest(newParams));
+      }
+    })
+    .catch((err) => openNotification('error', 'Thông báo', err.response.data.message));
+  }
+
   const updateOrder = () => {
     apiBase
     .put(`orders/update/${detail.id}`)
@@ -227,10 +247,11 @@ export default function Order() {
           ...params,
           page: params.page - 1,
         };
+        openNotification('success', 'Thông báo', 'Xác nhận đơn hàng thành công');
         dispatch(getListOrderRequest(newParams));
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => openNotification('error', 'Thông báo', err.response.data.message));
   };
 
   const onChangeOptionSearch = (e, nameChange) => {
@@ -395,8 +416,11 @@ export default function Order() {
             />
           </Col>
           <Col span={24} style={{marginTop: '30px', display: 'flex', justifyContent: 'center'}}>
-           <Button type="primary" onClick={() => updateOrder()} disabled={detail && detail.status == 2}>
+           <Button type="primary" onClick={updateOrder} disabled={detail && (detail.status == 2 || detail.status == -1)}>
               Xác nhận đơn hàng
+            </Button>
+            <Button type="default" danger onClick={rejectOrder} disabled={detail && (detail.status == 2 || detail.status == -1)} style={{marginLeft: '5px'}}>
+              Hủy đơn hàng
             </Button>
           </Col>
         </>

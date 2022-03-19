@@ -3,6 +3,7 @@ import { Row, Col, Form, Input, Button, Spin } from 'antd';
 import "./Register.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import {register} from './redux/action';
+import { Link } from 'react-router-dom';
 
 export default function Register() {
 
@@ -80,6 +81,8 @@ export default function Register() {
               <Input.Password />
             </Form.Item>
 
+            <Link to="/login">Đăng nhập</Link>
+            
             <Form.Item wrapperCol={{ offset: 8, span: 6 }} style={{textAlign: "center"}}>
               <Button type="primary" htmlType="submit">
                 Đăng ký

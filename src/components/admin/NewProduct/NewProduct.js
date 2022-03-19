@@ -16,12 +16,14 @@ export default function NewProduct() {
   const listCate = useSelector(store => store.AdminReducer.listCategories);
   const listProducerReducer = useSelector(store => store.AdminReducer.listProducer);
   const itemProductReducer = useSelector(store => store.AdminReducer.itemProduct);
+  const isSuccessCreateProduct = useSelector(store => store.AdminReducer.isSuccessCreateProduct);
   const [listParentCate, setListParentCate] = useState([]);
   const [listProducer, setListProducer] = useState([]);
   const [valueForm, setValueForm] = useState({});
   const [form] = Form.useForm();
   let { id } = useParams();
-
+  const formRef = React.createRef();
+  
   useEffect(() => {
     if(id) {
       dispatch(getDetailProductRequest(id));
@@ -29,6 +31,12 @@ export default function NewProduct() {
       dispatch(clearDetailProduct());
     }
   }, []);
+
+  useEffect(() => {
+    if(isSuccessCreateProduct) {
+      formRef.current.resetFields();
+    }
+  }, [isSuccessCreateProduct])
 
   const getNameImg = (img) => {
     const arr = img.split('_');
@@ -205,6 +213,7 @@ export default function NewProduct() {
           autoComplete="off"
           layout="horizontal"
           colon={false}
+          ref={formRef}
           >
              <Form.Item
               label="Tên sản phẩm"
